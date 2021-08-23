@@ -29,8 +29,7 @@ namespace TheCuber.Cube
         {
             if(_followTransform != null)
             {
-                _cameraTransform.position = _followTransform.position + _offsetPos;
-                _cameraTransform.eulerAngles = _offsetRot;
+                transform.position = _followTransform.position;
             }    
         }
 
