@@ -48,8 +48,9 @@ namespace TheCuber.Cube
 
             GetMoveDirection();
 
-            if (Math.Abs(Mathf.Round(MoveDirection.x) + Mathf.Round(MoveDirection.y) + Mathf.Round(MoveDirection.z)) == 1)
+            if (Math.Abs(Mathf.Round(MoveDirection.x) + Mathf.Round(MoveDirection.z)) == 1)
             {
+                Debug.Log($"Move Dir sum = {Mathf.Round(MoveDirection.x)} + {Mathf.Round(MoveDirection.z)}");
                 AssembleVectors(MoveDirection);
             }
         }
@@ -76,7 +77,11 @@ namespace TheCuber.Cube
         private void GetMoveDirection()
         {
             if (CubeController.Instance.CurrentCube == this)
-                MoveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+                MoveDirection = new Vector3(
+                    Mathf.Round(Input.GetAxis("Horizontal")),
+                    0f,
+                    Mathf.Round(Input.GetAxis("Vertical")))
+                    .normalized;
         }
 
         //public void ResetStep()
