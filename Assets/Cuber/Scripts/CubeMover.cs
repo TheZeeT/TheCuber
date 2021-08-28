@@ -10,9 +10,9 @@ namespace TheCuber.Cube
     {
         #region Inspector
         [SerializeField] private float _rollSpeed = 5;
-        [SerializeField] private Transform _follower;
-        [SerializeField] private Vector3 _newUp;
-        [SerializeField] private Vector3 _newFwrd;
+        //[SerializeField] private Transform _follower;
+        //[SerializeField] private Vector3 _newUp;
+        //[SerializeField] private Vector3 _newFwrd;
         [SerializeField] private StatusEffects _effects;
         #endregion
 
@@ -37,20 +37,13 @@ namespace TheCuber.Cube
         private void Start()
         {
             _cubeLayerMask = ~LayerMask.GetMask("Cube");
-            ResetStep();
+            CubeController.Instance.CurrentCube = this;
+            //ResetStep();
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                CubeController.Instance.UpDirection = _newUp;
-                CubeController.Instance.ForwardDirection = _newFwrd;
-                ResetStep();
-                Debug.Log("Set new Vectors");
-            }
-
-            if (CubeController.Instance.IsMoving || CubeController.Instance.IsCameraRotating)
+            if (CubeController.Instance.IsMoving) // || CubeController.Instance.IsCameraRotating)
                 return;
 
             GetMoveDirection();
@@ -82,24 +75,26 @@ namespace TheCuber.Cube
         }
         private void GetMoveDirection()
         {
-            MoveDirection = _follower.TransformDirection(
-                new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"))).normalized;
+            if (CubeController.Instance.CurrentCube == this)
+                MoveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
         }
 
-        public void ResetStep()
-        {
-            _follower.position = transform.position;
-            _follower.rotation = Quaternion.FromToRotation(Vector3.up, CubeController.Instance.UpDirection);
-            _follower.rotation = Quaternion.LookRotation(CubeController.Instance.ForwardDirection);
-        }
+        //public void ResetStep()
+        //{
+        //    _follower.position = transform.position;
+        //    _follower.rotation = Quaternion.FromToRotation(Vector3.up, CubeController.Instance.UpDirection);
+        //    _follower.rotation = Quaternion.LookRotation(CubeController.Instance.ForwardDirection);
+        //}
 
         private IEnumerator Roll(Vector3 anchor, Vector3 axis, int rotations)
         {
             CubeController.Instance.IsMoving = true;
 
-            for (var i = 0; i < 90 / _rollSpeed * rotations; i++)
+            float stepsCount = (_effects.HasFlag(StatusEffects.Fast) ? 2 : 1) * _rollSpeed;
+
+            for (var i = 0; i < 90 / stepsCount * rotations; i++)
             {
-                transform.RotateAround(anchor, axis, _rollSpeed);
+                transform.RotateAround(anchor, axis, stepsCount);
                 yield return null;
             }
 
@@ -114,7 +109,7 @@ namespace TheCuber.Cube
                 Mathf.Round(transform.position.y),
                 Mathf.Round(transform.position.z));
 
-            ResetStep();
+            //ResetStep();
 
             CubeController.Instance.IsMoving = false;
         }
@@ -171,10 +166,10 @@ namespace TheCuber.Cube
             Gizmos.color = Color.magenta;
             Gizmos.DrawRay(transform.position + Vector3.up, MoveDirection * 2);
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position + Vector3.up, _newUp);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(transform.position + Vector3.up, _newFwrd);
+            //Gizmos.color = Color.green;
+            //Gizmos.DrawRay(transform.position + Vector3.up, _newUp);
+            //Gizmos.color = Color.blue;
+            //Gizmos.DrawRay(transform.position + Vector3.up, _newFwrd);
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawRay(lastPos, lastDir);

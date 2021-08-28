@@ -7,7 +7,6 @@ namespace TheCuber.Cube
     public class CubeController : MonoBehaviour
     {
         #region Inspector
-        [SerializeField] private CubeMover _mover;
         #endregion
 
         #region Private
@@ -21,29 +20,19 @@ namespace TheCuber.Cube
         }
 
         public bool IsMoving { get;  set; }
-        public bool IsCameraRotating { get;  set; }
-        public Vector3 UpDirection { get;  set; }
-        public Vector3 ForwardDirection { get; set; }
+        //public bool IsCameraRotating { get;  set; }
+        //public Vector3 UpDirection { get;  set; }
+        //public Vector3 ForwardDirection { get; set; }
+        public CubeMover CurrentCube { get; set; }
         #endregion
 
         #region Functions
         private void Awake()
         {
             _instance = this;
-            UpDirection = Vector3.up;
-            ForwardDirection = Vector3.forward;
+            //UpDirection = Vector3.up;
+            //ForwardDirection = Vector3.forward;
         }
-
-        public void ResetStep()
-        {
-            _mover.ResetStep();
-        }
-
-        //private void Update()
-        //{
-        //    if (Input.GetKey(KeyCode.F))
-        //        Debug.Log($"Frw = {ForwardDirection}");
-        //}
         #endregion
 
         #region Gizmos
