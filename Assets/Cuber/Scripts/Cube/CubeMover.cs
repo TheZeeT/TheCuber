@@ -50,7 +50,7 @@ namespace TheCuber.Cube
 
             if (Math.Abs(Mathf.Round(MoveDirection.x) + Mathf.Round(MoveDirection.z)) == 1)
             {
-                Debug.Log($"Move Dir sum = {Mathf.Round(MoveDirection.x)} + {Mathf.Round(MoveDirection.z)}");
+                //Debug.Log($"Move Dir sum = {Mathf.Round(MoveDirection.x)} + {Mathf.Round(MoveDirection.z)}");
                 AssembleVectors(MoveDirection);
             }
         }
@@ -70,8 +70,14 @@ namespace TheCuber.Cube
             int rollCount = (hasEmptySpaceOnSameLevel ? 1 : 2) + (hasEmptySpaceAbove ? 0 : -1);
 
             if (rollCount > 0) // && (rollCount == 1 && hasEmptySpaceOnSameLevel ? !hasEmptySpaceBelow : true))
-                StartCoroutine(Roll(anchor, axis, rollCount));
+            {
+                MessagingSystem.Instance.TriggerMessage(new CubeMoveStartMessage(
+                    this,
+                    Vector3Int.FloorToInt(transform.position),
+                    Vector3Int.FloorToInt(transform.position + dir)));
 
+                StartCoroutine(Roll(anchor, axis, rollCount));
+            }
 
         }
         private void GetMoveDirection()
@@ -109,12 +115,14 @@ namespace TheCuber.Cube
 
         private void EndRoll()
         {
-            transform.position = new Vector3(
-                Mathf.Round(transform.position.x),
-                Mathf.Round(transform.position.y),
-                Mathf.Round(transform.position.z));
+            Vector3Int newPos = Vector3Int.RoundToInt(transform.position);
 
+            transform.position = newPos;
             //ResetStep();
+
+            MessagingSystem.Instance.TriggerMessage(new CubeMoveEndMessage(this, CubeController.Instance.CurrentCubePosition, newPos));
+
+            CubeController.Instance.CurrentCubePosition = newPos;
 
             CubeController.Instance.IsMoving = false;
         }

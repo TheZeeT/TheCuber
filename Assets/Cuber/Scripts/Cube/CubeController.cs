@@ -24,6 +24,8 @@ namespace TheCuber.Cube
         //public Vector3 UpDirection { get;  set; }
         //public Vector3 ForwardDirection { get; set; }
         public CubeMover CurrentCube { get; set; }
+
+        public Vector3Int CurrentCubePosition { get; set; }
         #endregion
 
         #region Functions
