@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee346293a42173d4d8e09656e04e98aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rollSpeed: 5
+  _rollSpeed: 3
   _effects: 0
 --- !u!1 &2160603771224763763
 GameObject:

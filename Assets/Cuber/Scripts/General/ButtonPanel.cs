@@ -25,7 +25,7 @@ public class ButtonPanel : MonoBehaviour
 
     private void OnDestroy()
     {
-        MessagingSystem.Instance.AttachListener(typeof(FloorButtonPressedMessage), OnFloorButtonPressed);
+        MessagingSystem.Instance.DetachListener(typeof(FloorButtonPressedMessage), OnFloorButtonPressed);
     }
 
     private void OnFloorButtonPressed(Message message)
@@ -40,7 +40,7 @@ public class ButtonPanel : MonoBehaviour
 
     private void SetState(bool isActive)
     {
-        _renderer.material.color = isActive ? Color.green : Color.black;
+        _renderer.material.color = isActive ? Color.green : Color.gray;
     }
     #endregion
 

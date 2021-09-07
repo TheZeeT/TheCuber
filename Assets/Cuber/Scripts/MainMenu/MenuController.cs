@@ -24,6 +24,7 @@ public class MenuController : MonoBehaviour
         _buttonNewGame.onClick.AddListener(OnClickNewGame);
         _buttonSelectLevel.onClick.AddListener(OnClickSelectLevel);
         _buttonExit.onClick.AddListener(OnClickExit);
+        FadeController.Instance.Fade(false, 1f);
     }
 
     private void OnClickNewGame()

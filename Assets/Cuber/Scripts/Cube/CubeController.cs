@@ -32,6 +32,7 @@ namespace TheCuber.Cube
         private void Awake()
         {
             _instance = this;
+            GameObject.DontDestroyOnLoad(this.gameObject);
             //UpDirection = Vector3.up;
             //ForwardDirection = Vector3.forward;
         }

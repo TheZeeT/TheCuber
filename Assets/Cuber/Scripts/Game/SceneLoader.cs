@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TheCuber.Cube;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +14,7 @@ public class SceneLoader : MonoBehaviour
 
     #region Private
     private List<string> _loadedScenes;
+    private int _currentLevel = -1;
     #endregion
 
     #region Public
@@ -33,25 +35,20 @@ public class SceneLoader : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        FadeController.Instance.Fade(false, 1f);
-    }
-
-    public void LoadLevel(int number)
-    {
-        LoadScene(_sceneNames[number - 1]);
+        //FadeController.Instance.Fade(false, 1f);
     }
 
     private void LoadScene(string name)
     {
-        if (_loadedScenes.Contains(name))
-        {
-            Debug.LogError($"Scene <b>{name}</b> already Loaded");
-        }
-        else
-        {
-            SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive);
-            _loadedScenes.Add(name);
-        }
+        //if (_loadedScenes.Contains(name))
+        //{
+        //    Debug.LogError($"Scene <b>{name}</b> already Loaded");
+        //}
+        //else
+        //{
+        SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive);
+        _loadedScenes.Add(name);
+        //}
     }
 
     private void UnloadScene(string name)
@@ -63,6 +60,43 @@ public class SceneLoader : MonoBehaviour
         }
         else
             Debug.LogError($"No scene <b>{name}</b> is loaded");
+    }
+
+    public void LoadLevel(int number)
+    {
+        StartCoroutine(ChangeScene(number));
+    }
+
+    public void LoadNextLevel()
+    {
+        LoadLevel(_currentLevel + 1);
+    }
+
+    public void ReloadLevel()
+    {
+        LoadLevel(_currentLevel);
+    }
+
+    private IEnumerator ChangeScene(int number)
+    {
+        FadeController.Instance.Fade(true, 1f);
+        yield return new WaitForSeconds(1.5f);
+
+        UnloadScene(_loadedScenes[0]);
+
+        yield return new WaitForSeconds(1.5f);
+
+        if (number - 1 < _sceneNames.Length)
+        {
+            LoadScene(_sceneNames[number - 1]);
+            _currentLevel = number;
+        }
+        else
+        {
+            LoadScene(_mainMenuName);
+            _currentLevel = -1;
+            CameraController.Instace.EnableCamera(false);
+        }
     }
     #endregion
 

@@ -30,7 +30,9 @@ public class MessagingSystem : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        GameObject.DontDestroyOnLoad(this.gameObject);
     }
+
     public bool AttachListener(System.Type type, MessageHandlerDelegate handler)
     {
         if (type == null)

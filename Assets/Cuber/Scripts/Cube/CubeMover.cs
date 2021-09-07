@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 namespace TheCuber.Cube
@@ -20,6 +21,7 @@ namespace TheCuber.Cube
         private Vector3 lastPos;
         private Vector3 lastDir;
         private int _cubeLayerMask;
+        private Coroutine _rollCoroutine = null;
 
         [Flags]
         public enum StatusEffects
@@ -38,7 +40,13 @@ namespace TheCuber.Cube
         {
             _cubeLayerMask = ~LayerMask.GetMask("Cube");
             CubeController.Instance.CurrentCube = this;
+            CubeController.Instance.IsMoving = false;
             //ResetStep();
+        }
+
+        private void OnDestroy()
+        {
+            CubeController.Instance.CurrentCube = null;
         }
 
         private void Update()
@@ -57,11 +65,14 @@ namespace TheCuber.Cube
 
         private void AssembleVectors(Vector3 dir)
         {
-            bool hasEmptySpaceBelow = !Physics.Raycast(transform.position + dir, Vector3.down, 1f, _cubeLayerMask);
-            bool hasEmptySpaceOnSameLevel = !Physics.Raycast(transform.position, dir, 1f, _cubeLayerMask);
-            bool hasEmptySpaceAbove = !Physics.Raycast(transform.position + Vector3.up, dir, 1f, _cubeLayerMask);
+            Vector3Int roundPos = Vector3Int.FloorToInt(transform.position);
+            Vector3Int roundDir = Vector3Int.RoundToInt(dir);
 
-            Vector3 anchor = transform.position + ((hasEmptySpaceOnSameLevel ? Vector3.down : Vector3.up) + dir) * 0.5f;
+            bool hasEmptySpaceBelow = !Physics.Raycast(roundPos + roundDir, Vector3.down, 1f, _cubeLayerMask);
+            bool hasEmptySpaceOnSameLevel = !Physics.Raycast(roundPos, roundDir, 1f, _cubeLayerMask);
+            bool hasEmptySpaceAbove = !Physics.Raycast(roundPos + Vector3.up, roundDir, 1f, _cubeLayerMask);
+
+            Vector3 anchor = transform.position + ((hasEmptySpaceOnSameLevel ? Vector3.down : Vector3.up) + roundDir) * 0.5f;
             Vector3 axis = Vector3.Cross(Vector3.up, dir);
 
             lastPos = anchor;
@@ -69,14 +80,19 @@ namespace TheCuber.Cube
 
             int rollCount = (hasEmptySpaceOnSameLevel ? 1 : 2) + (hasEmptySpaceAbove ? 0 : -1);
 
+            //Debug.Log($"rollCount = {rollCount} = {(hasEmptySpaceOnSameLevel ? 1 : 2)} + {(hasEmptySpaceAbove ? 0 : -1)}");
+
             if (rollCount > 0) // && (rollCount == 1 && hasEmptySpaceOnSameLevel ? !hasEmptySpaceBelow : true))
             {
+                CubeController.Instance.IsMoving = true;
+
                 MessagingSystem.Instance.TriggerMessage(new CubeMoveStartMessage(
                     this,
-                    Vector3Int.FloorToInt(transform.position),
-                    Vector3Int.FloorToInt(transform.position + dir)));
+                    roundPos,
+                    roundPos + roundDir));
 
-                StartCoroutine(Roll(anchor, axis, rollCount));
+                if (_rollCoroutine == null)
+                    _rollCoroutine = StartCoroutine(Roll(anchor, axis, rollCount));
             }
 
         }
@@ -99,9 +115,9 @@ namespace TheCuber.Cube
 
         private IEnumerator Roll(Vector3 anchor, Vector3 axis, int rotations)
         {
-            CubeController.Instance.IsMoving = true;
-
             float stepsCount = (_effects.HasFlag(StatusEffects.Fast) ? 2 : 1) * _rollSpeed;
+
+            //Debug.Log($"Roll steps = {90 / stepsCount * rotations}");
 
             for (var i = 0; i < 90 / stepsCount * rotations; i++)
             {
@@ -111,6 +127,8 @@ namespace TheCuber.Cube
 
             if (!CheckFalling())
                 EndRoll();
+
+            _rollCoroutine = null;
         }
 
         private void EndRoll()
@@ -135,6 +153,8 @@ namespace TheCuber.Cube
             }
             else
             {
+                //Debug.Log($"No floor on end roll, now at {transform.position.y}");
+
                 if (_effects.HasFlag(StatusEffects.Sticky))
                 {
                     bool isHanging = (
@@ -163,6 +183,8 @@ namespace TheCuber.Cube
             {
                 Debug.LogError("Fall of the world");
                 hit.point = new Vector3(transform.position.x, -100f, transform.position.z);
+                CubeController.Instance.CurrentCube = null;
+                SceneLoader.Instance.ReloadLevel();
             }
 
             float fallDuration = Mathf.Abs(transform.position.y - Mathf.Ceil(hit.point.y));
