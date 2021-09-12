@@ -11,6 +11,7 @@ namespace TheCuber.Cube
 
         #region Private
         private static CubeController _instance;
+        private Dictionary<string, GameObject> _blockers = new Dictionary<string, GameObject>();
         #endregion
 
         #region Public
@@ -19,10 +20,7 @@ namespace TheCuber.Cube
             get { return _instance; }
         }
 
-        public bool IsMoving { get;  set; }
-        //public bool IsCameraRotating { get;  set; }
-        //public Vector3 UpDirection { get;  set; }
-        //public Vector3 ForwardDirection { get; set; }
+        public bool CanMove { get; private set; }
         public CubeMover CurrentCube { get; set; }
 
         public Vector3Int CurrentCubePosition { get; set; }
@@ -36,6 +34,22 @@ namespace TheCuber.Cube
             //UpDirection = Vector3.up;
             //ForwardDirection = Vector3.forward;
         }
+
+        public void AddOrRemoveBlocker(string blockKey, GameObject obj, bool doAdd)
+        {
+            if(doAdd)
+            {
+                if (!_blockers.ContainsKey(blockKey))
+                    _blockers.Add(blockKey, obj);
+            }
+            else
+            {
+                if (_blockers.ContainsKey(blockKey))
+                    _blockers.Remove(blockKey);
+            }
+
+            CanMove = _blockers.Count == 0;
+        }    
         #endregion
 
         #region Gizmos

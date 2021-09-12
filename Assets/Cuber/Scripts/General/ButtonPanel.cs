@@ -8,6 +8,7 @@ public class ButtonPanel : MonoBehaviour
 {
     #region Inspector
     [SerializeField] private Renderer _renderer;
+    [SerializeField] private AudioSource _audio;
     #endregion
 
     #region Private
@@ -32,7 +33,7 @@ public class ButtonPanel : MonoBehaviour
     {
         FloorButtonPressedMessage castmsg = message as FloorButtonPressedMessage;
 
-        if(castmsg.button.gameObject == gameObject)
+        if (castmsg.button.gameObject == gameObject)
         {
             SetState(castmsg.isPressed);
         }
@@ -41,6 +42,8 @@ public class ButtonPanel : MonoBehaviour
     private void SetState(bool isActive)
     {
         _renderer.material.color = isActive ? Color.green : Color.gray;
+        if (isActive)
+            _audio.Play();
     }
     #endregion
 

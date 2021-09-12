@@ -38,13 +38,14 @@ public class LevelController : MonoBehaviour
             if(castmsg.isPressed)
             {
                 SceneLoader.Instance.LoadNextLevel();
+                BlockOnLevelFinish(true);
             }
         }
     }
 
     private IEnumerator StartSequence()
     {
-        FadeController.Instance.Fade(false, 2f);
+        FadeController.Instance.Fade(false, 1f);
 
         if (CameraController.Instace != null)
             CameraController.Instace.EnableCamera(true);
@@ -53,7 +54,12 @@ public class LevelController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        CubeController.Instance.IsMoving = false; // change to clear all blockers
+        BlockOnLevelFinish(false);
+    }
+
+    private void BlockOnLevelFinish(bool block)
+    {
+        CubeController.Instance.AddOrRemoveBlocker("LevelIsFinished", gameObject, block);
     }
     #endregion
 

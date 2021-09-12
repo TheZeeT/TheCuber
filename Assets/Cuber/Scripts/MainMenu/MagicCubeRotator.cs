@@ -45,7 +45,7 @@ public class MagicCubeRotator : MonoBehaviour
             //Debug.Log($"Random Vector chage to {_rotationTarget}");
         }
 
-        _rotationCurrent = Vector3.MoveTowards(_rotationCurrent, _rotationTarget, _speed);
+        _rotationCurrent = Vector3.RotateTowards(_rotationCurrent, _rotationTarget, _speed, _speed);
 
         if (_autoRotate)
             _cube.Rotate(_rotationCurrent);

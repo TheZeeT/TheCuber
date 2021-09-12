@@ -15,6 +15,7 @@ namespace TheCuber.Cube
         //[SerializeField] private Vector3 _newUp;
         //[SerializeField] private Vector3 _newFwrd;
         [SerializeField] private StatusEffects _effects;
+        [SerializeField] private AudioSource _audio;
         #endregion
 
         #region Private
@@ -39,8 +40,8 @@ namespace TheCuber.Cube
         private void Start()
         {
             _cubeLayerMask = ~LayerMask.GetMask("Cube");
-            CubeController.Instance.CurrentCube = this;
-            CubeController.Instance.IsMoving = false;
+            CubeController.Instance.CurrentCube = this; 
+            BlockMoving(false);
             //ResetStep();
         }
 
@@ -51,7 +52,7 @@ namespace TheCuber.Cube
 
         private void Update()
         {
-            if (CubeController.Instance.IsMoving) // || CubeController.Instance.IsCameraRotating)
+            if (!CubeController.Instance.CanMove) // || CubeController.Instance.IsCameraRotating)
                 return;
 
             GetMoveDirection();
@@ -84,7 +85,7 @@ namespace TheCuber.Cube
 
             if (rollCount > 0) // && (rollCount == 1 && hasEmptySpaceOnSameLevel ? !hasEmptySpaceBelow : true))
             {
-                CubeController.Instance.IsMoving = true;
+                BlockMoving(true);
 
                 MessagingSystem.Instance.TriggerMessage(new CubeMoveStartMessage(
                     this,
@@ -135,6 +136,8 @@ namespace TheCuber.Cube
         {
             Vector3Int newPos = Vector3Int.RoundToInt(transform.position);
 
+            _audio.Play();
+
             transform.position = newPos;
             //ResetStep();
 
@@ -142,7 +145,7 @@ namespace TheCuber.Cube
 
             CubeController.Instance.CurrentCubePosition = newPos;
 
-            CubeController.Instance.IsMoving = false;
+            BlockMoving(false);
         }
 
         private bool CheckFalling()
@@ -192,6 +195,11 @@ namespace TheCuber.Cube
             transform.DOMoveY(Mathf.Ceil(hit.point.y), fallDuration / 10f)
                 .SetEase(Ease.Linear)
                 .OnComplete(() => EndRoll());
+        }
+
+        private void BlockMoving(bool block)
+        {
+            CubeController.Instance.AddOrRemoveBlocker("Moving", gameObject, block);
         }
         #endregion
 

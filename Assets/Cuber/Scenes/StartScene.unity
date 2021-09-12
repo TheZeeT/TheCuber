@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17757854, g: 0.22232148, b: 0.30451626, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -155,6 +155,8 @@ MonoBehaviour:
   _mainMenuName: MainMenu
   _sceneNames:
   - Level1
+  - Level2
+  - Level3
 --- !u!4 &94860222
 Transform:
   m_ObjectHideFlags: 0

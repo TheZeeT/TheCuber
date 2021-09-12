@@ -1618,7 +1618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cube: {fileID: 2131188869}
   _camera: {fileID: 2124317360}
-  _speed: 0.0001
+  _speed: 0.001
   _objPX: {fileID: 1712798527}
   _objNX: {fileID: 714613256}
   _objPY: {fileID: 1838000493}

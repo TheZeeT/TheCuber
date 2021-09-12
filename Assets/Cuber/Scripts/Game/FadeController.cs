@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TheCuber.Cube;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,7 +29,10 @@ public class FadeController : MonoBehaviour
     public void Fade(bool toBlack, float duration)
     {
         if (toBlack)
+        {
             _blackScreen.gameObject.SetActive(true);
+            BlockOnFade(true);
+        }
         _blackScreen.DOColor(toBlack ? Color.black : Color.clear, duration)
             .OnComplete(() => OnFadeEnd(toBlack));
     }
@@ -36,6 +40,12 @@ public class FadeController : MonoBehaviour
     private void OnFadeEnd(bool toBlack)
     {
         _blackScreen.gameObject.SetActive(toBlack);
+        BlockOnFade(toBlack);
+    }
+
+    private void BlockOnFade(bool block)
+    {
+        CubeController.Instance.AddOrRemoveBlocker("ScreenIsBlock", gameObject, block);
     }
     #endregion
 
