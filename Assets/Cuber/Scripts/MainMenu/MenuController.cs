@@ -34,7 +34,8 @@ public class MenuController : MonoBehaviour
 
     private void OnClickSelectLevel()
     {
-        throw new NotImplementedException();
+        PauseMenu.Instance.ShowLevelSelector(true);
+        //throw new NotImplementedException();
     }
 
     private void OnClickExit()

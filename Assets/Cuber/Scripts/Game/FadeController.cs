@@ -16,6 +16,7 @@ public class FadeController : MonoBehaviour
 
     #region Public
     public static FadeController Instance { get; private set; }
+    public bool IsBlack { get; private set; }
     #endregion
 
     #region Functions
@@ -32,6 +33,7 @@ public class FadeController : MonoBehaviour
         {
             _blackScreen.gameObject.SetActive(true);
             BlockOnFade(true);
+            IsBlack = true;
         }
         _blackScreen.DOColor(toBlack ? Color.black : Color.clear, duration)
             .OnComplete(() => OnFadeEnd(toBlack));
@@ -41,6 +43,7 @@ public class FadeController : MonoBehaviour
     {
         _blackScreen.gameObject.SetActive(toBlack);
         BlockOnFade(toBlack);
+        IsBlack = toBlack;
     }
 
     private void BlockOnFade(bool block)

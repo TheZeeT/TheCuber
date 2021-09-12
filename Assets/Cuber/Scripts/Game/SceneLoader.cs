@@ -19,6 +19,7 @@ public class SceneLoader : MonoBehaviour
 
     #region Public
     public static SceneLoader Instance { get; private set; }
+    public int TotalLevelCount { get { return _sceneNames.Length; } }
     #endregion
 
     #region Functions
@@ -86,7 +87,7 @@ public class SceneLoader : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        if (number - 1 < _sceneNames.Length)
+        if (number > 0 && number - 1 < _sceneNames.Length)
         {
             LoadScene(_sceneNames[number - 1]);
             _currentLevel = number;

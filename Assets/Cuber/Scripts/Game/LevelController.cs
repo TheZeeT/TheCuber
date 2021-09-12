@@ -29,6 +29,18 @@ public class LevelController : MonoBehaviour
         MessagingSystem.Instance.DetachListener(typeof(FloorButtonPressedMessage), OnFloorButtonPressed);
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            bool nextState = !PauseMenu.Instance.PauseMenuActive;
+            PauseMenu.Instance.ShowPauseMenu(nextState);
+
+            if(!nextState)
+                PauseMenu.Instance.ShowLevelSelector(nextState);
+        }
+    }
+
     private void OnFloorButtonPressed(Message message)
     {
         FloorButtonPressedMessage castmsg = message as FloorButtonPressedMessage;
