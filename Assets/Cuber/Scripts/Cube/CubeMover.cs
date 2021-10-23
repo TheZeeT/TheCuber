@@ -48,12 +48,9 @@ namespace TheCuber.Cube
             CubeController.Instance.CurrentCube = null;
         }
 
-        private void Update()
+        public void MoveCube(Vector3 newMoveDirection)
         {
-            if (!CubeController.Instance.CanMove) // || CubeController.Instance.IsCameraRotating)
-                return;
-
-            GetMoveDirection();
+            MoveDirection = newMoveDirection;
 
             if (Math.Abs(Mathf.Round(MoveDirection.x) + Mathf.Round(MoveDirection.z)) == 1)
             {
@@ -94,16 +91,7 @@ namespace TheCuber.Cube
                     _rollCoroutine = StartCoroutine(Roll(anchor, axis, rollCount));
             }
 
-        }
-        private void GetMoveDirection()
-        {
-            if (CubeController.Instance.CurrentCube == this)
-                MoveDirection = new Vector3(
-                    Mathf.Round(Input.GetAxis("Horizontal")),
-                    0f,
-                    Mathf.Round(Input.GetAxis("Vertical")))
-                    .normalized;
-        }
+        }        
 
         //public void ResetStep()
         //{

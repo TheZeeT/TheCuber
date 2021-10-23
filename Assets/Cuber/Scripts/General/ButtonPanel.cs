@@ -9,6 +9,8 @@ public class ButtonPanel : MonoBehaviour
     #region Inspector
     [SerializeField] private Renderer _renderer;
     [SerializeField] private AudioSource _audio;
+    [SerializeField] private Color _colorIdle = Color.grey;
+    [SerializeField] private Color _colorPressed = Color.green;
     #endregion
 
     #region Private
@@ -41,7 +43,7 @@ public class ButtonPanel : MonoBehaviour
 
     private void SetState(bool isActive)
     {
-        _renderer.material.color = isActive ? Color.green : Color.gray;
+        _renderer.material.color = isActive ? _colorPressed : _colorIdle;
         if (isActive)
             _audio.Play();
     }

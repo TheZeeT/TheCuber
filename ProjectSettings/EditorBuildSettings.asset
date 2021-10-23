@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Cuber/Scenes/Levels/Level3.unity
     guid: 20f8371abff163444b1cafa537d4c07a
+  - enabled: 1
+    path: Assets/Cuber/Scenes/Levels/Level4.unity
+    guid: 918a80b3ca7b951418d9acd6d3903fd5
   m_configObjects: {}

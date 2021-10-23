@@ -35,9 +35,18 @@ namespace TheCuber.Cube
             //ForwardDirection = Vector3.forward;
         }
 
+        private void Update()
+        {
+            if (!CubeController.Instance.CanMove) // || CubeController.Instance.IsCameraRotating)
+                return;
+
+            if (CurrentCube != null)
+                CurrentCube.MoveCube(GetMoveDirection());
+        }
+
         public void AddOrRemoveBlocker(string blockKey, GameObject obj, bool doAdd)
         {
-            if(doAdd)
+            if (doAdd)
             {
                 if (!_blockers.ContainsKey(blockKey))
                     _blockers.Add(blockKey, obj);
@@ -49,7 +58,16 @@ namespace TheCuber.Cube
             }
 
             CanMove = _blockers.Count == 0;
-        }    
+        }
+
+        private Vector3 GetMoveDirection()
+        {
+            return new Vector3(
+                Mathf.Round(Input.GetAxis("Horizontal")),
+                0f,
+                Mathf.Round(Input.GetAxis("Vertical")))
+                .normalized;
+        }
         #endregion
 
         #region Gizmos

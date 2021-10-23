@@ -34,7 +34,7 @@ public class Enterable : MonoBehaviour
     {
         CubeMoveStartMessage castmsg = message as CubeMoveStartMessage;
 
-        if (castmsg.toPosition == Vector3Int.FloorToInt(transform.position))
+        if (castmsg.toPosition == Vector3Int.RoundToInt(transform.position))
         {
             if (_onRollIn)
             {
@@ -42,7 +42,7 @@ public class Enterable : MonoBehaviour
             }
         }
 
-        if (castmsg.fromPosition == Vector3Int.FloorToInt(transform.position))
+        if (castmsg.fromPosition == Vector3Int.RoundToInt(transform.position))
         {
             if(_onRollOff)
             {
